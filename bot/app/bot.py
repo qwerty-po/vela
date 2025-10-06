@@ -1,5 +1,6 @@
 import discord
 from app.chat.models import VelaGPT
+from app.emoji.models import EmojiStealModel
 
 
 class Bot(discord.Client):
@@ -14,10 +15,12 @@ class Bot(discord.Client):
         if message.channel.name != "qwerty-디코봇-개발일지":
             return
 
-        if self.user.mentioned_in(message):
+        if message.type == discord.MessageType.default and message.flags.forwarded:
             async with message.channel.typing():
-                if message.channel not in self.vela_gpts:
-                    self.vela_gpts[message.channel] = VelaGPT()
-                response = await self.vela_gpts[message.channel].get_response(message)
+                emoji_stealer = EmojiStealModel(guild=message.guild)
+                emojies = await emoji_stealer.steal_emojies_from_forwarded_message(
+                    message
+                )
 
-                await message.reply(response)
+                for emoji in emojies:
+                    await message.channel.send(f"이모지 {emoji} 추가했어!")
