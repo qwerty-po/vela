@@ -8,8 +8,14 @@ class BotConfig(BaseModel):
     token: str
 
 
+class OllamaConfig(BaseModel):
+    model: str
+    host: str
+
+
 class ConfigModel(BaseModel):
     bot: BotConfig
+    ollama: OllamaConfig
 
 
 class Config:
