@@ -15,8 +15,21 @@ class Bot(discord.Client):
         if message.channel.name != "qwerty-디코봇-개발일지":
             return
 
+        if message.channel not in self.vela_gpts:
+            self.vela_gpts[message.channel] = VelaGPT()
+
+        self.vela_gpts[message.channel].add_context(message)
+
         if message.type == discord.MessageType.default and message.flags.forwarded:
             await self._steal_emoji_from_message(message)
+
+        elif self.user.mentioned_in(message):
+            async with message.channel.typing():
+                response = await self.vela_gpts[
+                    message.channel
+                ].add_context_and_get_response(message)
+
+                await message.reply(response)
 
     async def _steal_emoji_from_message(self, message: discord.Message):
         async with message.channel.typing():
