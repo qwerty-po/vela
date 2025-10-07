@@ -22,5 +22,14 @@ class Bot(discord.Client):
                     message
                 )
 
-                for emoji in emojies:
-                    await message.channel.send(f"이모지 {emoji} 추가했어!")
+                await message.add_reaction("<:vela_curious:1424979897520230410>")
+                if emojies:
+                    await message.reply(
+                        f"새로운 이모지들이네? 여기에도 추가해야겠어! {''.join(self._contextable_string_from_emoji(emoji) for emoji in emojies)}"
+                    )
+                else:
+                    await message.reply("이미 있는 이모지들이야?")
+
+    @staticmethod
+    def _contextable_string_from_emoji(emoji: discord.Emoji) -> str:
+        return f"<:{emoji.name}:{emoji.id}>"
