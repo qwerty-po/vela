@@ -1,0 +1,6 @@
+[bot]
+token=""
+
+[ollama]
+model="llama3"
+host="http://localhost:11434"
